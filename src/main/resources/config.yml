@@ -1,0 +1,24 @@
+######################[ Skyller-NetworkInterface ]##################
+##                                                                ##
+##                   Encontrou algum bug? Reporte!                ##
+##                                                                ##
+##                  Email: editionsenpai@gmail.com                ##
+##                     Discord: Sr_Edition#4765                   ##
+##                                                                ##
+####################################################################
+
+
+#/------------------------------------------------------------------/
+#     Autor: ${project.author}
+#     Versão: ${project.version}
+#/------------------------------------------------------------------/
+
+#Aqui você define o nome deste servidor.
+#Este nome será usado como referencia, sempre que o proxy precisar recuperar esta conexão.
+serverName: "myserver"
+
+#Aqui você define o endereço de IPV4, do proxy.
+proxyHost: "127.0.0.1"
+
+#Aqui você define a porta do proxy.
+proxyPort: 47974

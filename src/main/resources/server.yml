@@ -1,0 +1,25 @@
+######################[ Skyller-NetworkInterface ]##################
+##                                                                ##
+##                   Encontrou algum bug? Reporte!                ##
+##                                                                ##
+##                  Email: editionsenpai@gmail.com                ##
+##                     Discord: Sr_Edition#4765                   ##
+##                                                                ##
+####################################################################
+
+
+#/------------------------------------------------------------------/
+#     Autor: ${project.author}
+#     Versão: ${project.version}
+#/------------------------------------------------------------------/
+
+#Aqui define as configurações do servidor.
+
+#Aqui você define a porta que a interface vai rodar.
+#Certifique-se de que essa porta esteja liberada para uso.
+serverPort: 47974
+
+
+#Aqui você define se quer receber APENAS conexões localhost, ou se pode receber conexões externas também.
+#Para receber conexões externas você precisa liberar a porta do 'serverPort' no seu firewall.
+onlyLocalConnections: true
