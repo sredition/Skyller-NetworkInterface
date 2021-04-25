@@ -17,7 +17,7 @@ public class SNIPacketSendData extends SNIPacket {
 
 	public String getTarget()
 	{
-		return target;
+		return this.target;
 	}
 
 	public void setTarget(String target)
@@ -27,7 +27,7 @@ public class SNIPacketSendData extends SNIPacket {
 
 	public byte[] getData()
 	{
-		return data;
+		return this.data;
 	}
 
 	public void setData(byte[] data)

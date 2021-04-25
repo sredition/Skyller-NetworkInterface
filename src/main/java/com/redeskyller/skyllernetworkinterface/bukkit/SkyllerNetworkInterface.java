@@ -11,6 +11,7 @@ import com.redeskyller.skyllernetworkinterface.SNIClient;
 import com.redeskyller.skyllernetworkinterface.SNIPacket;
 import com.redeskyller.skyllernetworkinterface.SNITokenFile;
 import com.redeskyller.skyllernetworkinterface.bukkit.events.SNIDataReceivedEvent;
+import com.redeskyller.skyllernetworkinterface.bukkit.util.SNIClientConnector;
 import com.redeskyller.skyllernetworkinterface.packets.SNIPacketSendData;
 
 public class SkyllerNetworkInterface extends JavaPlugin implements Listener {
@@ -20,7 +21,7 @@ public class SkyllerNetworkInterface extends JavaPlugin implements Listener {
 	private YamlConfiguration config;
 	private String serverName;
 	private SNITokenFile tokenFile;
-	private SNIClient client;
+	private SNIClientConnector connector;
 
 	@Override
 	public void onEnable()
@@ -38,27 +39,28 @@ public class SkyllerNetworkInterface extends JavaPlugin implements Listener {
 
 		this.tokenFile = new SNITokenFile(new File(getDataFolder(), "secret.token"));
 
-		this.client = new SNIClient(getServerName(), this.config.getString("proxyHost"),
+		SNIClient client = new SNIClient(getServerName(), this.config.getString("proxyHost"),
 				this.config.getInt("proxyPort"));
 
-		this.client.setDataCallback(data -> {
+		client.setDataCallback(data -> {
 			Bukkit.getPluginManager().callEvent(new SNIDataReceivedEvent(data));
 		});
 
-		this.client.connect(this.tokenFile.getToken());
+		this.connector = new SNIClientConnector(client, this.tokenFile.getToken());
+		this.connector.start();
 	}
 
 	@Override
 	public void onDisable()
 	{
-		if (this.client != null) {
-			this.client.end();
+		if (this.connector != null) {
+			this.connector.finish();
 		}
 	}
 
 	public void sendPacket(String server, SNIPacket packet)
 	{
-		getClient().sendPacket(new SNIPacketSendData(server, packet.serialize()));
+		getConnector().getClient().sendPacket(new SNIPacketSendData(server, packet.serialize()));
 	}
 
 	public static SkyllerNetworkInterface getInstance()
@@ -66,24 +68,25 @@ public class SkyllerNetworkInterface extends JavaPlugin implements Listener {
 		return instance;
 	}
 
+	@Override
 	public YamlConfiguration getConfig()
 	{
-		return config;
+		return this.config;
 	}
 
 	public String getServerName()
 	{
-		return serverName;
+		return this.serverName;
 	}
 
 	public SNITokenFile getTokenFile()
 	{
-		return tokenFile;
+		return this.tokenFile;
 	}
 
-	public SNIClient getClient()
+	public SNIClientConnector getConnector()
 	{
-		return client;
+		return this.connector;
 	}
 
 }

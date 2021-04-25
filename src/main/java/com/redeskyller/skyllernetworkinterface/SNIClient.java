@@ -38,8 +38,13 @@ public class SNIClient implements Runnable {
 
 	public void connect(String token2fa)
 	{
+		this.connect(token2fa, false);
+	}
+
+	public void connect(String token2fa, boolean silent)
+	{
 		try {
-			disconnect();
+			endConnection();
 
 			this.socket = new Socket(this.hostname, this.port);
 
@@ -53,33 +58,37 @@ public class SNIClient implements Runnable {
 			this.socket.getOutputStream().write(byteArrayOutputStream.toByteArray());
 			this.socket.getOutputStream().flush();
 
+			this.dataListenerThread = new Thread(this);
 			this.dataListenerThread.start();
 		} catch (Exception exception) {
-			exception.printStackTrace();
+			if (!silent) {
+				exception.printStackTrace();
+			}
 		}
 	}
 
-	public void disconnect()
+	public boolean checkConnection()
 	{
-		if (this.socket != null) {
-			try {
-				this.socket.close();
-			} catch (Exception exception) {
-				exception.printStackTrace();
-			}
-			this.socket = null;
+		try {
+			DataOutputStream dataOutputStream = new DataOutputStream(this.socket.getOutputStream());
+			dataOutputStream.writeInt(0);
+			dataOutputStream.flush();
+			return true;
+		} catch (Exception exception) {
+			return false;
 		}
 	}
 
 	public void sendPacket(SNIPacket packet)
 	{
-		if (packet != null)
+		if (packet != null) {
 			sendData(packet.serialize());
+		}
 	}
 
 	public void sendData(byte[] data)
 	{
-		if (data != null && data.length > 0) {
+		if ((data != null) && (data.length > 0)) {
 
 			try {
 				DataOutputStream dataOutputStream = new DataOutputStream(this.socket.getOutputStream());
@@ -94,11 +103,13 @@ public class SNIClient implements Runnable {
 		}
 	}
 
-	public void end()
+	public void endConnection()
 	{
 		try {
-			this.socket.close();
-			this.socket = null;
+			if (this.socket != null) {
+				this.socket.close();
+				this.socket = null;
+			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -116,7 +127,7 @@ public class SNIClient implements Runnable {
 						data[i] = dataInputStream.readByte();
 					}
 
-					if (this.dataCallback != null) {
+					if ((data.length > 0) && (this.dataCallback != null)) {
 						this.dataCallback.call(data);
 					}
 				}

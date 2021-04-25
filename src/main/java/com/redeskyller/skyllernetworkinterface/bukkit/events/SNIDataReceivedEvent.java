@@ -16,7 +16,7 @@ public class SNIDataReceivedEvent extends Event {
 
 	public byte[] getData()
 	{
-		return data;
+		return this.data;
 	}
 
 	@Override

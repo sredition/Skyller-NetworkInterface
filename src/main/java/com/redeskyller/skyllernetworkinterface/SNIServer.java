@@ -59,15 +59,27 @@ public class SNIServer extends Thread {
 									if (packet != null) {
 										SNIClient targetClient = getClient(packet.getTarget());
 										if (targetClient != null) {
-											targetClient.sendData(packet.getData());
+
+											if (targetClient.checkConnection()) {
+												targetClient.sendData(packet.getData());
+											} else {
+
+												targetClient.endConnection();
+												this.clients.remove(targetClient.getName());
+
+												this.log.info("Não foi possível conectar-se com '"
+														+ targetClient.getName()
+														+ "', a conexão foi removida e não está mais catalogada.");
+											}
 										}
 									}
 								});
 
 								client.getDataListenerThread().start();
 
-								if (this.clients.containsKey(clientName))
-									this.clients.get(clientName).end();
+								if (this.clients.containsKey(clientName)) {
+									this.clients.get(clientName).endConnection();
+								}
 
 								this.clients.put(clientName, client);
 
