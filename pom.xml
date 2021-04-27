@@ -6,6 +6,16 @@
 	<artifactId>Skyller-NetworkInterface</artifactId>
 	<version>1.0</version>
 	<description>Uma interface de conexão própria, para envios e recebimentos de pacotes de dados.</description>
+	
+
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>Skyller-NetworkInterface</name>
+			<url>https://maven.pkg.github.com/sredition/Skyller-NetworkInterface</url>
+		</repository>
+	</distributionManagement>
+
 
 
 
